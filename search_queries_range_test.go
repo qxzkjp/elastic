@@ -21,7 +21,7 @@ func TestRangeQuery(t *testing.T) {
 		t.Fatalf("marshaling to JSON failed: %v", err)
 	}
 	got := string(data)
-	expected := `{"range":{"_name":"my_query","postDate":{"boost":3,"gte":"2010-03-01","lte":"2010-04-01","relation":"within"}}}`
+	expected := `{"range":{"_name":"my_query","postDate":{"boost":3,"from":"2010-03-01","include_lower":true,"include_upper":true,"relation":"within","to":"2010-04-01"}}}`
 	if got != expected {
 		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
 	}
@@ -41,7 +41,7 @@ func TestRangeQueryWithTimeZone(t *testing.T) {
 		t.Fatalf("marshaling to JSON failed: %v", err)
 	}
 	got := string(data)
-	expected := `{"range":{"born":{"gte":"2012-01-01","lte":"now","time_zone":"+1:00"}}}`
+	expected := `{"range":{"born":{"from":"2012-01-01","include_lower":true,"include_upper":true,"time_zone":"+1:00","to":"now"}}}`
 	if got != expected {
 		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
 	}
@@ -61,14 +61,14 @@ func TestRangeQueryWithFormat(t *testing.T) {
 		t.Fatalf("marshaling to JSON failed: %v", err)
 	}
 	got := string(data)
-	expected := `{"range":{"born":{"format":"yyyy/MM/dd","gte":"2012/01/01","lte":"now"}}}`
+	expected := `{"range":{"born":{"format":"yyyy/MM/dd","from":"2012/01/01","include_lower":true,"include_upper":true,"to":"now"}}}`
 	if got != expected {
 		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
 	}
 }
 
-func TestOneSidedRangeQueryGte(t *testing.T) {
-	q := NewRangeQuery("postDate").
+func TestOneSidedRangeQuery(t *testing.T) {
+	q := NewRangeQuery("born").
 		Gte("2012/01/01")
 	src, err := q.Source()
 	if err != nil {
@@ -79,61 +79,7 @@ func TestOneSidedRangeQueryGte(t *testing.T) {
 		t.Fatalf("marshaling to JSON failed: %v", err)
 	}
 	got := string(data)
-	expected := `{"range":{"born":{"gte":"2012/01/01"}}}`
-	if got != expected {
-		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
-	}
-}
-
-func TestOneSidedRangeQueryGt(t *testing.T) {
-	q := NewRangeQuery("postDate").
-		Gt("2012/01/01")
-	src, err := q.Source()
-	if err != nil {
-		t.Fatal(err)
-	}
-	data, err := json.Marshal(src)
-	if err != nil {
-		t.Fatalf("marshaling to JSON failed: %v", err)
-	}
-	got := string(data)
-	expected := `{"range":{"born":{"gt":"2012/01/01"}}}`
-	if got != expected {
-		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
-	}
-}
-
-func TestOneSidedRangeQueryLte(t *testing.T) {
-	q := NewRangeQuery("postDate").
-		Lte("2012/01/01")
-	src, err := q.Source()
-	if err != nil {
-		t.Fatal(err)
-	}
-	data, err := json.Marshal(src)
-	if err != nil {
-		t.Fatalf("marshaling to JSON failed: %v", err)
-	}
-	got := string(data)
-	expected := `{"range":{"born":{"lte":"2012/01/01"}}}`
-	if got != expected {
-		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
-	}
-}
-
-func TestOneSidedRangeQueryLt(t *testing.T) {
-	q := NewRangeQuery("postDate").
-		Lt("2012/01/01")
-	src, err := q.Source()
-	if err != nil {
-		t.Fatal(err)
-	}
-	data, err := json.Marshal(src)
-	if err != nil {
-		t.Fatalf("marshaling to JSON failed: %v", err)
-	}
-	got := string(data)
-	expected := `{"range":{"born":{"lt":"2012/01/01"}}}`
+	expected := `{"range":{"born":{"format":"yyyy/MM/dd","from":"2012/01/01","include_lower":true,"include_upper":true}}}`
 	if got != expected {
 		t.Errorf("expected\n%s\n,got:\n%s", expected, got)
 	}

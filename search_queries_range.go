@@ -131,19 +131,11 @@ func (q *RangeQuery) Source() (interface{}, error) {
 	rangeQ[q.name] = params
 
 	if q.from != nil {
-		if q.includeLower {
-			params["gte"] = q.from
-		} else {
-			params["gt"] = q.from
-		}
+		params["from"] = q.from
 	}
 
 	if q.to != nil {
-		if q.includeUpper {
-			params["lte"] = q.to
-		} else {
-			params["lt"] = q.to
-		}
+		params["to"] = q.to
 	}
 
 	if q.timeZone != "" {
@@ -158,6 +150,8 @@ func (q *RangeQuery) Source() (interface{}, error) {
 	if q.boost != nil {
 		params["boost"] = *q.boost
 	}
+	params["include_lower"] = q.includeLower
+	params["include_upper"] = q.includeUpper
 
 	if q.queryName != "" {
 		rangeQ["_name"] = q.queryName
